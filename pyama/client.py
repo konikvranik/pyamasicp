@@ -3,6 +3,10 @@ import functools
 import logging
 import socket
 
+import wakeonlan
+from scapy.layers.l2 import ARP, Ether
+from scapy.sendrecv import srp
+
 HEADER = b'\xA6'
 CATEGORY = b'\x00'
 CODE0 = b'\x00'
@@ -14,11 +18,34 @@ def calculate_checksum(message):
     return bytes([functools.reduce(lambda a, b: a ^ b, list(message))])
 
 
+def get_mac_address(ip):
+    # Create an ARP request frame
+    arp_request = ARP(pdst=ip)
+
+    # Create an Ethernet frame to broadcast the ARP request
+    broadcast = Ether(dst="ff:ff:ff:ff:ff:ff")
+
+    # Stack them together (Ethernet frame + ARP request)
+    arp_request_broadcast = broadcast / arp_request
+
+    # Send the packet and capture the response
+    answered_list = srp(arp_request_broadcast, timeout=2, verbose=False)[0]
+
+    # Check if we received any response
+    if answered_list:
+        # The second element of the tuple is the response packet, "hwsrc" has the MAC address
+        return answered_list[0][1].hwsrc
+    else:
+        return None
+
+
 class Client:
 
-    def __init__(self, host, port=5000, timeout=5, buffer_size=1024):
+    def __init__(self, host, port=5000, timeout=5, buffer_size=1024, mac=None, wol_target=None):
+        self._wol_target = wol_target
         self._host = host
         self._port = port
+        self._mac = get_mac_address(self._host) if mac is None else mac
         self._logger = logging.getLogger(self.__class__.__name__)
         self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._socket.settimeout(timeout)
@@ -30,6 +57,10 @@ class Client:
             self._logger.error(f"Connection error: {e}")
             self._socket.close()
             exit(1)
+
+    def wake_on_lan(self):
+        wakeonlan.send_magic_packet(self._mac,
+                                    ip_address=self._wol_target if ':' in self._wol_target else wakeonlan.BROADCAST_IP)
 
     def send(self, id: bytes, command: bytes, data: bytes = b''):
 
