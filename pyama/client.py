@@ -28,7 +28,7 @@ def _prepare_message(id, command, data):
 
 class Client:
 
-    def __init__(self, host, port=5000, timeout=5, buffer_size=1024, mac=None, wol_target=None):
+    def __init__(self, host, port=5000, timeout=15, buffer_size=1024, mac=None, wol_target=None):
         self._timeout = timeout
         self._wol_target = wol_target
         self._host = host
@@ -125,7 +125,7 @@ class Client:
         self._logger.debug("length: %d / %d" % (response_length, length))
         self._logger.debug("control: 0x%02x" % control)
         self._logger.debug("command: 0x%02x" % response_command)
-        self._logger.debug("checksum: 0x%02x / %s" % (response_checksum, binascii.hexlify(bytes([checksum]))))
+        self._logger.debug("checksum: 0x%02x / %s" % (response_checksum, binascii.hexlify(checksum)))
 
     def _log_debug_request(self, id, message, data):
         checksum = message[-1]

@@ -34,3 +34,37 @@
 | 0xC1     | Language                   |                        | Set     |
 | 0xDB     | IR Remote                  |                        |         |
 | 0x0F     | Miscellaneous info         | Operating hours        |         |
+
+
+
+
+| Hex Code | Description  |
+|----------|--------------|
+| 0xA0     | Power        |
+| 0xA1     | Menu         |
+| 0xA2     | Input        |
+| 0xA3     | Vol_Up       |
+| 0xA4     | Vol_Down     |
+| 0xA5     | Mute         |
+| 0xA6     | Cursor_Up    |
+| 0xA7     | Cursor_Down  |
+| 0xA8     | Cursor_Left  |
+| 0xA9     | Cursor_Right |
+| 0xB1     | OK           |
+| 0xB2     | Return       |
+| 0xC1     | Red          |
+| 0xC2     | Green        |
+| 0xC3     | Yellow       |
+| 0xC4     | Blue         |
+| 0xD1     | Format       |
+| 0xD2     | Info         |
+| 0x00     | Btn_0        |
+| 0x01     | Btn_1        |
+| 0x02     | Btn_2        |
+| 0x03     | Btn_3        |
+| 0x04     | Btn_4        |
+| 0x05     | Btn_5        |
+| 0x06     | Btn_6        |
+| 0x07     | Btn_7        |
+| 0x08     | Btn_8        |
+| 0x09     | Btn_9        |
