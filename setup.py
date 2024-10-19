@@ -11,7 +11,7 @@ with open(os.path.join(this_dir, "README.rst"), "r") as f:
 PACKAGES = find_packages(exclude=["tests", "tests.*", "build"])
 
 setup(
-    name="pyama",
+    name="pyamasicp",
     version="0.1.0",
     author="Petr Vraník",
     author_email="hpa@suteren.net",
@@ -20,7 +20,7 @@ setup(
     ),
     license="MIT",
     keywords="rs232 lan iiyama home-assistant",
-    url="https://github.com/konikvranik/pyama/",
+    url="https://github.com/konikvranik/pyamasicp/",
     packages=PACKAGES,
     install_requires=[],
     long_description=long_description,
@@ -36,7 +36,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "pyama=pyama.__main__:main",
+            "pyama=pyamasicp.__main__:main",
         ],
     },
 )

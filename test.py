@@ -1,9 +1,8 @@
 import logging
 
-from getmac import get_mac_address as gma
-
-from pyama import client
-from pyama.commands import Commands, IR_VOL_UP, IR_VOL_DOWN, IR_OK
+from pyamasicp import client
+from pyamasicp.commands import Commands, IR_VOL_UP, IR_VOL_DOWN, IR_OK
+import getmac
 
 logging.basicConfig(level=logging.INFO)
 
@@ -12,7 +11,7 @@ logger.setLevel(logging.INFO)
 
 HOST = 'iiyama.home'
 
-logger.debug("MAC: %a" % gma(ip=HOST, hostname=HOST))
+logger.debug("MAC: %a" % getmac.get_mac_address(ip=HOST, hostname=HOST))
 
 
 c = Commands( client.Client(HOST))

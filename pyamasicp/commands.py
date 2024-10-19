@@ -1,4 +1,4 @@
-from pyama.client import Client
+from pyamasicp.client import Client
 
 SET_POWER_STATE_COMMAND = b'\x18'
 GET_POWER_STATE_COMMAND = b'\x19'
