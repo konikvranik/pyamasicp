@@ -40,6 +40,33 @@ IR_BTN_7 = b'\x07'
 IR_BTN_8 = b'\x08'
 IR_BTN_9 = b'\x09'
 
+INPUT_SOURCES = {
+    "VIDEO": b'\x00',
+    "Display Port": b'\x01',
+    "S-VIDEO": b'\x02',
+    "COMPONENT": b'\x03',
+    "VGA": b'\x05',
+    "HDMI 2": b'\x06',
+    "Display Port 2": b'\x07',
+    "USB 2": b'\x08',
+    "Card DVI-D": b'\x09',
+    "Display Port 1": b'\x0A',
+    "Card OPS": b'\x0B',
+    "USB 1": b'\x0C',
+    "HDMI 1": b'\x0D',
+    "DVI-D": b'\x0E',
+    "HDMI 3": b'\x0F',
+    "BROWSER": b'\x10',
+    "SMARTCMS": b'\x11',
+    "DMS (Digital Media Server)": b'\x12',
+    "INTERNAL STORAGE": b'\x13',
+    "Reserved": b'\x14',
+    "Media Player": b'\x16',
+    "PDF Player": b'\x17',
+    "Custom": b'\x18',
+    "HDMI 4": b'\x19',
+}
+
 
 class Commands:
 
