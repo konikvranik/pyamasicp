@@ -1,12 +1,15 @@
 from pyamasicp.client import Client
 
-SET_POWER_STATE_COMMAND = b'\x18'
-GET_POWER_STATE_COMMAND = b'\x19'
-SET_VOLUME_COMMAND = b'\x44'
-GET_VOLUME_COMMAND = b'\x45'
-IR_COMMAND = b'\xDB'
-POWER_OFF = b'\x01'
-POWER_ON = b'\x02'
+CMD_SET_POWER_STATE = b'\x18'
+CMD_GET_POWER_STATE = b'\x19'
+CMD_SET_VOLUME = b'\x44'
+CMD_GET_VOLUME = b'\x45'
+CMD_SET_INPUT_SOURCE = b'\xAC'
+CMD_GET_INPUT_SOURCE = b'\xAD'
+CMD_IR = b'\xDB'
+
+VAL_POWER_OFF = b'\x01'
+VAL_POWER_ON = b'\x02'
 
 IR_POWER = b'\xA0'
 IR_MENU = b'\xA1'
@@ -45,7 +48,7 @@ class Commands:
         self._id = id
 
     def get_power_state(self):
-        match self._client.send(self._id, GET_POWER_STATE_COMMAND):
+        match self._client.send(self._id, CMD_GET_POWER_STATE):
             case b'\x01':
                 return False
             case b'\x02':
@@ -54,18 +57,24 @@ class Commands:
                 raise CommandException("Unknown power state")
 
     def set_power_state(self, state: bool):
-        self._client.send(self._id, SET_POWER_STATE_COMMAND, POWER_ON if state else POWER_OFF)
+        self._client.send(self._id, CMD_SET_POWER_STATE, VAL_POWER_ON if state else VAL_POWER_OFF)
 
     def get_volume(self):
-        result = [b for b in self._client.send(self._id, GET_VOLUME_COMMAND)]
+        result = [b for b in self._client.send(self._id, CMD_GET_VOLUME)]
         result.reverse()
         return result
 
-    def set_volume(self, output_volume=0, volume=0):
-        self._client.send(self._id, SET_VOLUME_COMMAND, bytearray([volume, output_volume]))
+    def set_volume(self, volume=0, output_volume=0):
+        self._client.send(self._id, CMD_SET_VOLUME, bytearray([volume, output_volume, 0, 0]))
+
+    def get_input_source(self):
+        return [b for b in self._client.send(self._id, CMD_GET_INPUT_SOURCE)]
+
+    def set_input_source(self, input_type=0, input_number=0, osd_style=0, reserved=0):
+        self._client.send(self._id, CMD_SET_INPUT_SOURCE, bytearray([input_type, input_number, osd_style, reserved]))
 
     def ir_command(self, code):
-        self._client.send(self._id, IR_COMMAND, code)
+        self._client.send(self._id, CMD_IR, code)
 
 
 class CommandException(Exception):

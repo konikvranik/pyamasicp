@@ -1,44 +1,43 @@
-| Hex Code | Description                | Additional Information | Get/Set |
-|----------|----------------------------|------------------------|---------|
-| 0x00     | Communication Control      | Generic report         |         |
-| 0x15     | Serial Code                |                        | Get     |
-| 0x18     | Power state                |                        | Set     |
-| 0x19     | Power state                |                        | Get     |
-| 0x1C     | User Input Control         |                        | Set     |
-| 0x1D     | User Input Control         |                        | Get     |
-| 0x32     | Video parameters           |                        | Set     |
-| 0x33     | Video parameters           | Brightness, etc.       | Get     |
-| 0x34     | Color temperature          |                        | Set     |
-| 0x35     | Color temperature          |                        | Get     |
-| 0x36     | Color parameters           |                        | Set     |
-| 0x37     | Color parameters           |                        | Get     |
-| 0x3A     | Picture Format             |                        | Set     |
-| 0x3B     | Picture Format             |                        | Get     |
-| 0x42     | Audio parameters           |                        | Set     |
-| 0x43     | Audio parameters           |                        | Get     |
-| 0x44     | Volume                     |                        | Set     |
-| 0x45     | Volume                     |                        | Get     |
-| 0x5A     | Scheduling                 |                        | Set     |
-| 0x5B     | Scheduling                 |                        | Get     |
-| 0x70     | Auto Adjust                | VGA only               |         |
-| 0xAC     | Input Source               |                        | Set     |
-| 0xAD     | Current Source             |                        | Get     |
-| 0xAE     | Auto Signal Detecting      |                        | Set     |
-| 0xAF     | Auto Signal Detecting      |                        | Get     |
-| 0xA2     | Platform and version labels|                        | Get     |
-| 0xA3     | Power state at cold start  |                        |         |
-| 0xB1     | Pixel Shift                |                        | Get     |
-| 0xB2     | Pixel Shift                |                        | Set     |
-| 0xB8     | Volume limits              |                        | Set     |
-| 0xC0     | Language                   |                        | Get     |
-| 0xC1     | Language                   |                        | Set     |
-| 0xDB     | IR Remote                  |                        |         |
-| 0x0F     | Miscellaneous info         | Operating hours        |         |
 
 
+| Hex Code | Type | Description                 | Additional Information |
+|----------|------|-----------------------------|------------------------|
+| 0x00     |      | Communication Control       | Generic report         |
+| 0x15     | Get  | Serial Code                 |                        |
+| 0x18     | Set  | Power state                 |                        |
+| 0x19     | Get  | Power state                 |                        |
+| 0x1C     | Set  | User Input Control          |                        |
+| 0x1D     | Get  | User Input Control          |                        |
+| 0x32     | Set  | Video parameters            |                        |
+| 0x33     | Get  | Video parameters            | Brightness, etc.       |
+| 0x34     | Set  | Color temperature           |                        |
+| 0x35     | Get  | Color temperature           |                        |
+| 0x36     | Set  | Color parameters            |                        |
+| 0x37     | Get  | Color parameters            |                        |
+| 0x3A     | Set  | Picture Format              |                        |
+| 0x3B     | Get  | Picture Format              |                        |
+| 0x42     | Set  | Audio parameters            |                        |
+| 0x43     | Get  | Audio parameters            |                        |
+| 0x44     | Set  | Volume                      |                        |
+| 0x45     | Get  | Volume                      |                        |
+| 0x5A     | Set  | Scheduling                  |                        |
+| 0x5B     | Get  | Scheduling                  |                        |
+| 0x70     |      | Auto Adjust                 | VGA only               |
+| 0xAC     | Set  | Input Source                |                        |
+| 0xAD     | Get  | Current Source              |                        |
+| 0xAE     | Set  | Auto Signal Detecting       |                        |
+| 0xAF     | Get  | Auto Signal Detecting       |                        |
+| 0xA2     | Get  | Platform and version labels |                        |
+| 0xA3     |      | Power state at cold start   |                        |
+| 0xB1     | Get  | Pixel Shift                 |                        |
+| 0xB2     | Set  | Pixel Shift                 |                        |
+| 0xB8     | Set  | Volume limits               |                        |
+| 0xC0     | Get  | Language                    |                        |
+| 0xC1     | Set  | Language                    |                        |
+| 0xDB     |      | IR Remote                   |                        |
+| 0x0F     |      | Miscellaneous info          | Operating hours        |
 
-
-| Hex Code | Description  |
+| Hex Code | IR Code      |
 |----------|--------------|
 | 0xA0     | Power        |
 | 0xA1     | Menu         |
@@ -68,3 +67,15 @@
 | 0x07     | Btn_7        |
 | 0x08     | Btn_8        |
 | 0x09     | Btn_9        |
+
+| Hex Code | Input Source |
+|----------|--------------|
+| 0x0d     | HDMI1        |
+| 0x06     | HDMI2        |
+| 0x0F     | HDMI3        |
+| 0x10     | Browser      |
+| 0x11     | CMS          |
+| 0x13     | Files        |
+| 0x16     | Media        |
+| 0x17     | PDF          |
+| 0x18     | Custom       |

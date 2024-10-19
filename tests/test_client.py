@@ -37,7 +37,7 @@ class TestClient(unittest.TestCase):
     def test_client(self, mocked_create_and_connect_socket, mocked_call_remote):
         # Positive test case
         cl = Client('test.host', mac="00:00:00:00:00:00")
-        result = cl.send(self._id, commands.GET_POWER_STATE_COMMAND)
+        result = cl.send(self._id, commands.CMD_GET_POWER_STATE)
         self.assertEqual(b'\x02', result)
         mocked_call_remote.assert_called_with(cl)
 
