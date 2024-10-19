@@ -1,4 +1,5 @@
 import binascii
+import socket
 
 from pyamasicp.client import Client
 
@@ -77,17 +78,23 @@ class Commands:
         self._id = id
 
     def get_power_state(self):
-        result = self._client.send(self._id, CMD_GET_POWER_STATE)
-        match result:
-            case b'\x01':
-                return False
-            case b'\x02':
-                return True
-            case _:
-                raise CommandException("Unknown power state: %s" % binascii.hexlify(result))
+        try:
+            result = self._client.send(self._id, CMD_GET_POWER_STATE)
+            match result:
+                case b'\x01':
+                    return False
+                case b'\x02':
+                    return True
+                case _:
+                    raise CommandException("Unknown power state: %s" % binascii.hexlify(result))
+        except socket.error:
+            return False
 
     def set_power_state(self, state: bool):
-        self._client.send(self._id, CMD_SET_POWER_STATE, VAL_POWER_ON if state else VAL_POWER_OFF)
+        try:
+            self._client.send(self._id, CMD_SET_POWER_STATE, VAL_POWER_ON if state else VAL_POWER_OFF)
+        except socket.error as e:
+            self._client.wake_on_lan()
 
     def get_volume(self):
         result = [b for b in self._client.send(self._id, CMD_GET_VOLUME)]

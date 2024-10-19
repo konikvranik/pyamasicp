@@ -29,10 +29,9 @@ def _prepare_message(id, command, data):
 
 class Client:
 
-    def __init__(self, host, port=5000, timeout=.5, wake_delay=7, retries=20, buffer_size=1024, mac=None,
+    def __init__(self, host, port=5000, timeout=.5, retries=3, buffer_size=1024, mac=None,
                  wol_target=None):
         self._lock = threading.Lock()
-        self._wake_delay = wake_delay
         self._retries = retries
         self._timeout = timeout
         self._wol_target = wol_target
@@ -74,16 +73,16 @@ class Client:
     def _create_and_connect_socket(self):
         _socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         _socket.settimeout(self._timeout)
+        error = None
         for _ in range(self._retries):
             try:
                 _socket.connect((self._host, self._port))
                 return _socket
-            except socket.error:
-                self.wake_on_lan()
-                sleep(self._wake_delay)
+            except socket.error as e:
+                error = e
         self._logger.error("Connection error")
         _socket.close()
-        return None
+        raise error
 
     def _process_response(self, id, command, response_data):
 
