@@ -28,7 +28,10 @@ def _prepare_message(id, command, data):
 
 class Client:
 
-    def __init__(self, host, port=5000, timeout=15, buffer_size=1024, mac=None, wol_target=None):
+    def __init__(self, host, port=5000, timeout=2, wake_delay=7, retries=20, buffer_size=1024, mac=None,
+                 wol_target=None):
+        self._wake_delay = wake_delay
+        self._retries = retries
         self._timeout = timeout
         self._wol_target = wol_target
         self._host = host
@@ -38,8 +41,9 @@ class Client:
         self._buffer_size = buffer_size  # Timeout after 5 seconds
 
     def wake_on_lan(self):
-        wakeonlan.send_magic_packet(self._mac,
-                                    ip_address=wakeonlan.BROADCAST_IP if self._wol_target is None else self._wol_target)
+        target_ip = wakeonlan.BROADCAST_IP if self._wol_target is None else self._wol_target
+        self._logger.debug('Waking on LAN %s using %s' % (self._mac, target_ip))
+        wakeonlan.send_magic_packet(self._mac, ip_address=target_ip)
 
     def send(self, id: bytes, command: bytes, data: bytes = b''):
         _socket = self._create_and_connect_socket()
@@ -47,8 +51,8 @@ class Client:
             try:
                 message = _prepare_message(id, command, data)
                 self._log_debug_request(id, message, data)
-                _socket.sendall(message)
-                return self._process_response(id, command, _socket.recv(self._buffer_size))
+                recv = self._call_remote(_socket, message)
+                return self._process_response(id, command, recv)
             except socket.timeout:
                 self._logger.error("Socket timeout, no response received from the server.")
             except socket.error as e:
@@ -56,17 +60,21 @@ class Client:
             finally:
                 _socket.close()
 
+    def _call_remote(self, _socket, message):
+        _socket.sendall(message)
+        recv = _socket.recv(self._buffer_size)
+        return recv
+
     def _create_and_connect_socket(self):
         _socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         _socket.settimeout(self._timeout)
-        for _ in range(10):
+        for _ in range(self._retries):
             try:
                 _socket.connect((self._host, self._port))
                 return _socket
             except socket.error:
-                wakeonlan.send_magic_packet(self._mac,
-                                            ip_address=wakeonlan.BROADCAST_IP if self._wol_target is None else self._wol_target)
-                sleep(5)
+                self.wake_on_lan()
+                sleep(self._wake_delay)
         self._logger.error("Connection error")
         _socket.close()
         return None

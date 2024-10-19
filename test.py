@@ -4,22 +4,21 @@ from pyamasicp import client
 from pyamasicp.commands import Commands, IR_VOL_UP, IR_VOL_DOWN, IR_OK
 import getmac
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
 HOST = 'iiyama.home'
 
 logger.debug("MAC: %a" % getmac.get_mac_address(ip=HOST, hostname=HOST))
 
-
-c = Commands( client.Client(HOST))
-#c.set_power_state(True)
+c = Commands(client.Client(HOST,mac="DC:62:94:25:02:B3"))
+# c.set_power_state(True)
 
 c.set_volume(22)
-#c.ir_command(IR_OK)
-logger.info("%s"%(c.get_volume()))
+# c.ir_command(IR_OK)
+logger.info("%s" % (c.get_volume()))
 
 # c.send(b'\x01', b'\x18', b'\x01')
 
