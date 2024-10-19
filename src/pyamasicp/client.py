@@ -2,6 +2,7 @@ import binascii
 import functools
 import logging
 import socket
+import threading
 from time import sleep
 
 import getmac
@@ -28,8 +29,9 @@ def _prepare_message(id, command, data):
 
 class Client:
 
-    def __init__(self, host, port=5000, timeout=2, wake_delay=7, retries=20, buffer_size=1024, mac=None,
+    def __init__(self, host, port=5000, timeout=.5, wake_delay=7, retries=20, buffer_size=1024, mac=None,
                  wol_target=None):
+        self._lock = threading.Lock()
         self._wake_delay = wake_delay
         self._retries = retries
         self._timeout = timeout
@@ -48,19 +50,20 @@ class Client:
         wakeonlan.send_magic_packet(self._mac, ip_address=target_ip)
 
     def send(self, id: bytes, command: bytes, data: bytes = b''):
-        _socket = self._create_and_connect_socket()
-        if _socket:
-            try:
-                message = _prepare_message(id, command, data)
-                self._log_debug_request(id, message, data)
-                recv = self._call_remote(_socket, message)
-                return self._process_response(id, command, recv)
-            except socket.timeout:
-                self._logger.error("Socket timeout, no response received from the server.")
-            except socket.error as e:
-                self._logger.error(f"Socket error: {e}")
-            finally:
-                _socket.close()
+        with self._lock:
+            _socket = self._create_and_connect_socket()
+            if _socket:
+                try:
+                    message = _prepare_message(id, command, data)
+                    self._log_debug_request(id, message, data)
+                    recv = self._call_remote(_socket, message)
+                    return self._process_response(id, command, recv)
+                except socket.timeout:
+                    self._logger.error("Socket timeout, no response received from the server.")
+                except socket.error as e:
+                    self._logger.error(f"Socket error: {e}")
+                finally:
+                    _socket.close()
 
     def _call_remote(self, _socket, message):
         _socket.sendall(message)
