@@ -5,6 +5,7 @@ from unittest.mock import patch
 
 from pyamasicp import commands
 from pyamasicp.client import Client
+from pyamasicp.commands import Commands
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -39,6 +40,23 @@ class TestClient(unittest.TestCase):
         result = cl.send(self._id, commands.GET_POWER_STATE_COMMAND)
         self.assertEqual(b'\x02', result)
         mocked_call_remote.assert_called_with(cl)
+
+
+class TestCommand(unittest.TestCase):
+
+    def __init__(self, methodName='runTest'):
+        super().__init__(methodName)
+
+        # Test data
+        self._id = b'\x01'
+
+    @patch.object(Client, '_create_and_connect_socket', side_effect=_mock_socket, autospec=True)
+    @patch.object(Client, '_call_remote', side_effect=_mock_remote_call, autospec=True)
+    def test_get_power_state(self, mocked_create_and_connect_socket, mocked_call_remote):
+        # Positive test case
+        cmd = Commands(Client('test.host', mac="00:00:00:00:00:00"), self._id)
+        result = cmd.get_power_state()
+        self.assertEqual(True, result)
 
 
 if __name__ == "__main__":
