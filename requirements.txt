@@ -1,3 +1,2 @@
 getmac~=0.9.5
 wakeonlan~=3.1.0
-setuptools~=75.2.0
