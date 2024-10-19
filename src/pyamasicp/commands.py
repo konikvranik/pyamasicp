@@ -43,30 +43,30 @@ IR_BTN_8 = b'\x08'
 IR_BTN_9 = b'\x09'
 
 INPUT_SOURCES = {
-    "VIDEO": b'\x00',
-    "Display Port": b'\x01',
-    "S-VIDEO": b'\x02',
-    "COMPONENT": b'\x03',
-    "VGA": b'\x05',
-    "HDMI 2": b'\x06',
-    "Display Port 2": b'\x07',
-    "USB 2": b'\x08',
-    "Card DVI-D": b'\x09',
-    "Display Port 1": b'\x0A',
-    "Card OPS": b'\x0B',
-    "USB 1": b'\x0C',
-    "HDMI 1": b'\x0D',
-    "DVI-D": b'\x0E',
-    "HDMI 3": b'\x0F',
-    "BROWSER": b'\x10',
-    "SMARTCMS": b'\x11',
-    "DMS (Digital Media Server)": b'\x12',
-    "INTERNAL STORAGE": b'\x13',
-    "Reserved": b'\x14',
-    "Media Player": b'\x16',
-    "PDF Player": b'\x17',
-    "Custom": b'\x18',
-    "HDMI 4": b'\x19',
+    "VIDEO": 0x00,
+    "Display Port": 0x01,
+    "S-VIDEO": 0x02,
+    "COMPONENT": 0x03,
+    "VGA": 0x05,
+    "HDMI 2": 0x06,
+    "Display Port 2": 0x07,
+    "USB 2": 0x08,
+    "Card DVI-D": 0x09,
+    "Display Port 1": 0x0A,
+    "Card OPS": 0x0B,
+    "USB 1": 0x0C,
+    "HDMI 1": 0x0D,
+    "DVI-D": 0x0E,
+    "HDMI 3": 0x0F,
+    "BROWSER": 0x10,
+    "SMARTCMS": 0x11,
+    "DMS (Digital Media Server)": 0x12,
+    "INTERNAL STORAGE": 0x13,
+    "Reserved": 0x14,
+    "Media Player": 0x16,
+    "PDF Player": 0x17,
+    "Custom": 0x18,
+    "HDMI 4": 0x19,
 }
 
 
@@ -94,7 +94,7 @@ class Commands:
         result.reverse()
         return result
 
-    def set_volume(self, volume=0, output_volume=0):
+    def set_volume(self, output_volume=0, volume=0):
         self._client.send(self._id, CMD_SET_VOLUME, bytearray([volume, output_volume, 0, 0]))
 
     def get_input_source(self):

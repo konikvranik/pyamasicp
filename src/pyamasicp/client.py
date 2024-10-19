@@ -64,6 +64,7 @@ class Client:
                     self._logger.error(f"Socket error: {e}")
                 finally:
                     _socket.close()
+                    sleep(.6)
 
     def _call_remote(self, _socket, message):
         _socket.sendall(message)
