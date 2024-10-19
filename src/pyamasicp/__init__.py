@@ -1,6 +1,8 @@
 import logging
 import sys
 
+import homeassistant
+
 stdout_handler = logging.StreamHandler(sys.stdout)
 stderr_handler = logging.StreamHandler(sys.stderr)
 

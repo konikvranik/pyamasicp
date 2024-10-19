@@ -36,9 +36,11 @@ class Client:
         self._wol_target = wol_target
         self._host = host
         self._port = port
-        self._mac = getmac.get_mac_address(ip=self._host, hostname=self._host) if mac is None else mac
+        self._mac = mac if mac else getmac.get_mac_address(ip=self._host, hostname=self._host)
         self._logger = logging.getLogger(self.__class__.__name__)
         self._buffer_size = buffer_size  # Timeout after 5 seconds
+        self._logger.debug(
+            'host: %s:%d, mac: %s, wol_target: %s' % (self._host, self._port, self._mac, self._wol_target))
 
     def wake_on_lan(self):
         target_ip = wakeonlan.BROADCAST_IP if self._wol_target is None else self._wol_target

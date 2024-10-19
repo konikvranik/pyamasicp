@@ -1,3 +1,5 @@
+import binascii
+
 from pyamasicp.client import Client
 
 CMD_SET_POWER_STATE = b'\x18'
@@ -75,13 +77,14 @@ class Commands:
         self._id = id
 
     def get_power_state(self):
-        match self._client.send(self._id, CMD_GET_POWER_STATE):
+        result = self._client.send(self._id, CMD_GET_POWER_STATE)
+        match result:
             case b'\x01':
                 return False
             case b'\x02':
                 return True
             case _:
-                raise CommandException("Unknown power state")
+                raise CommandException("Unknown power state: %s" % binascii.hexlify(result))
 
     def set_power_state(self, state: bool):
         self._client.send(self._id, CMD_SET_POWER_STATE, VAL_POWER_ON if state else VAL_POWER_OFF)
