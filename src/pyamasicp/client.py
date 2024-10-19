@@ -37,7 +37,7 @@ class Client:
         self._host = host
         self._port = port
         self._mac = mac if mac else getmac.get_mac_address(ip=self._host, hostname=self._host)
-        self._logger = logging.getLogger(self.__class__.__name__)
+        self._logger = logging.getLogger(self.__class__.__qualname__)
         self._buffer_size = buffer_size  # Timeout after 5 seconds
         self._logger.debug(
             'host: %s:%d, mac: %s, wol_target: %s' % (self._host, self._port, self._mac, self._wol_target))
