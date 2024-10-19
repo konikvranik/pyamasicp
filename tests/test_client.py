@@ -8,9 +8,15 @@ from pyamasicp.client import Client
 
 logging.basicConfig(level=logging.DEBUG)
 
+REQUESTS = {
+    b'\xa6\x01\x00\x00\x00\x05\x01\x44\x00\x16\xf1': b'\x21\x01\x00\x00\x04\x01\x00\x00\x25',
+    b'\xa6\x01\x00\x00\x00\x03\x01\x45\xe0': b'\x21\x01\x00\x00\x05\x01\x45\x16\x16\x61',
+    b'\xa6\x01\x00\x00\x00\x03\x01\x19\xbc': b'\x21\x01\x00\x00\x04\x01\x19\x02\x3e',
+}
+
 
 def _mock_remote_call(self, _socket, message):
-    return message
+    return REQUESTS[message]
 
 
 def _mock_socket(self):
@@ -31,8 +37,8 @@ class TestClient(unittest.TestCase):
         # Positive test case
         cl = Client('test.host', mac="00:00:00:00:00:00")
         result = cl.send(self._id, commands.GET_POWER_STATE_COMMAND)
-        self.assertEqual(30, result)
-        mocked_call_remote.assert_called_with(self._id, commands.GET_POWER_STATE_COMMAND)
+        self.assertEqual(b'\x02', result)
+        mocked_call_remote.assert_called_with(cl)
 
 
 if __name__ == "__main__":

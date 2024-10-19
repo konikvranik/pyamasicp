@@ -20,6 +20,9 @@ c.set_volume(22)
 # c.ir_command(IR_OK)
 logger.info("%s" % (c.get_volume()))
 
+c.get_power_state()
+
+
 # c.send(b'\x01', b'\x18', b'\x01')
 
 # send(b'\x01', b'\xA2', b'\x01')
