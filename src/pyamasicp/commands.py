@@ -1,4 +1,5 @@
 import binascii
+import logging
 import socket
 
 from pyamasicp.client import Client
@@ -9,7 +10,17 @@ CMD_SET_VOLUME = b'\x44'
 CMD_GET_VOLUME = b'\x45'
 CMD_SET_INPUT_SOURCE = b'\xAC'
 CMD_GET_INPUT_SOURCE = b'\xAD'
+CMD_GET_INFO = b'\xA1'
+CMD_GET_VERSION = b'\xA2'
 CMD_IR = b'\xDB'
+
+MODEL_INFO_MODEL_NUMBER = b'\x00'
+MODEL_INFO_FW_VERSION = b'\x01'
+MODEL_INFO_BUILD_DATE = b'\x02'
+
+VERSION_INFO_OTSC_IMPLEMENTATION_VERSION = b'\x00'
+VERSION_INFO_PLATFORM_LABEL = b'\x01'
+VERSION_INFO_PLATFORM_VERSION = b'\x02'
 
 VAL_POWER_OFF = b'\x01'
 VAL_POWER_ON = b'\x02'
@@ -74,6 +85,7 @@ INPUT_SOURCES = {
 class Commands:
 
     def __init__(self, client: Client, id=b'\x01'):
+        self._logger = logging.getLogger(self.__class__.__qualname__)
         self._client = client
         self._id = id
 
@@ -85,16 +97,21 @@ class Commands:
                     return False
                 case b'\x02':
                     return True
+                case None:
+                    self._logger.warning("No power state retrieved.")
+                    return None
                 case _:
-                    raise CommandException("Unknown power state: %s" % binascii.hexlify(result))
+                    self._logger.warning("Unknown power state: %s" % binascii.hexlify(result))
+                    return None
         except socket.error:
-            return False
+            return None
 
     def set_power_state(self, state: bool):
         try:
             self._client.send(self._id, CMD_SET_POWER_STATE, VAL_POWER_ON if state else VAL_POWER_OFF)
-        except socket.error as e:
-            self._client.wake_on_lan()
+        except socket.error:
+            if state:
+                self._client.wake_on_lan()
 
     def get_volume(self):
         result = [b for b in self._client.send(self._id, CMD_GET_VOLUME)]
@@ -109,6 +126,28 @@ class Commands:
 
     def set_input_source(self, input_type=0, input_number=0, osd_style=0, reserved=0):
         self._client.send(self._id, CMD_SET_INPUT_SOURCE, bytearray([input_type, input_number, osd_style, reserved]))
+
+    def get_osc_implementation_version(self):
+        return self._get_string(CMD_GET_VERSION, bytes(VERSION_INFO_OTSC_IMPLEMENTATION_VERSION))
+
+    def get_platform_label(self):
+        return self._get_string(CMD_GET_VERSION, bytes(VERSION_INFO_PLATFORM_LABEL))
+
+    def get_platform_version(self):
+        return self._get_string(CMD_GET_VERSION, bytes(VERSION_INFO_PLATFORM_VERSION))
+
+    def get_model_number(self):
+        return self._get_string(CMD_GET_INFO, bytes(MODEL_INFO_MODEL_NUMBER))
+
+    def get_fw_version(self):
+        return self._client.send(CMD_GET_INFO, bytes(MODEL_INFO_FW_VERSION))
+
+    def get_build_date(self):
+        return self._client.send(CMD_GET_INFO, bytes(MODEL_INFO_BUILD_DATE))
+
+    def _get_string(self, cmd, data):
+        response = self._client.send(self._id, cmd, data)
+        return response.decode('utf-8') if response else None
 
     def ir_command(self, code):
         self._client.send(self._id, CMD_IR, code)

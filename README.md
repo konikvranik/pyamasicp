@@ -1,4 +1,9 @@
+![logo](https://github.com/home-assistant/brands/blob/master/custom_integrations/iiyama_sicp/logo.png?raw=true)
 # iiyama rs232 SICP
+
+Library to control iiama TV over LAN using rs232 serial interface communication protocol.
+
+Supported features depend on the model of the TV.
 
 ## Commands
 

@@ -1,3 +1,4 @@
+import asyncio
 import binascii
 import functools
 import logging
@@ -29,7 +30,7 @@ def _prepare_message(id, command, data):
 
 class Client:
 
-    def __init__(self, host, port=5000, timeout=.5, retries=3, buffer_size=1024, mac=None,
+    def __init__(self, host, port=5000, timeout=.7, retries=3, buffer_size=1024, mac=None,
                  wol_target=None):
         self._lock = threading.Lock()
         self._retries = retries
@@ -78,9 +79,11 @@ class Client:
             try:
                 _socket.connect((self._host, self._port))
                 return _socket
+            except BlockingIOError:
+                sleep(.1)
             except socket.error as e:
                 error = e
-        self._logger.error("Connection error")
+        self._logger.debug("Connection error: %s" % error)
         _socket.close()
         raise error
 
