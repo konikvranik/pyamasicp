@@ -1,4 +1,5 @@
 ![logo](https://github.com/home-assistant/brands/blob/master/custom_integrations/iiyama_sicp/logo.png?raw=true)
+
 # iiyama rs232 SICP
 
 Library to control iiama TV over LAN using rs232 serial interface communication protocol.
@@ -35,7 +36,8 @@ Supported features depend on the model of the TV.
 | 0xAE     | Set  | Auto Signal Detecting       |                        |
 | 0xAF     | Get  | Auto Signal Detecting       |                        |
 | 0xA2     | Get  | Platform and version labels |                        |
-| 0xA3     |      | Power state at cold start   |                        |
+| 0xA3     | Set  | Power state at cold start   |                        |
+| 0xA4     | Get  | Power state at cold start   |                        |
 | 0xB1     | Get  | Pixel Shift                 |                        |
 | 0xB2     | Set  | Pixel Shift                 |                        |
 | 0xB8     | Set  | Volume limits               |                        |

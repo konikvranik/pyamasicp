@@ -3,7 +3,7 @@ import logging
 from pyamasicp import client
 from pyamasicp.commands import Commands, IR_VOL_UP, IR_VOL_DOWN, IR_OK, VERSION_INFO_OTSC_IMPLEMENTATION_VERSION, \
     VERSION_INFO_PLATFORM_LABEL, VERSION_INFO_PLATFORM_VERSION, MODEL_INFO_MODEL_NUMBER, MODEL_INFO_FW_VERSION, \
-    MODEL_INFO_BUILD_DATE
+    MODEL_INFO_BUILD_DATE, IR_CURSOR_UP
 import getmac
 
 logging.basicConfig(level=logging.DEBUG)
@@ -13,25 +13,29 @@ logger.setLevel(logging.DEBUG)
 
 logger.debug("MAC: %a" % getmac.get_mac_address(ip='iiyama.home', hostname='iiyama.home'))
 
-c = Commands(client.Client('iiyama.home', mac="DC:62:94:25:02:B3"))
+cl = client.Client('iiyama.home', mac="DC:62:94:25:02:B3")
+cm = Commands(cl)
 
-c.set_power_state(True)
+cm.set_power_state(True)
 
 # c.set_volume(22)
-# c.ir_command(IR_OK)
-logger.info("Current volume level: %s" % (c.get_volume()))
-input_source = c.get_input_source()
-logger.info("Current input source: 0x%02X[%d]" % (input_source[0], input_source[1]))
+
+print("Lock state: %s" % cl.send(b'\x01', b'\x1D'))
+cm.ir_command(IR_CURSOR_UP)
+
+# logger.info("Current volume level: %s" % (c.get_volume()))
+# input_source = c.get_input_source()
+# logger.info("Current input source: 0x%02X[%d]" % (input_source[0], input_source[1]))
 
 #c.set_input_source(0x18)
 
 
-print("OSC implementation version: %s" % c.get_osc_implementation_version())
-print("Platform label: %s" % c.get_platform_label())
-print("Platform version: %s" % c.get_platform_version())
-print("Model number: %s" % c.get_model_number())
-print("FW version: %s" % c.get_fw_version())
-print("Build date: %s" % c.get_build_date())
+# print("OSC implementation version: %s" % c.get_osc_implementation_version())
+# print("Platform label: %s" % c.get_platform_label())
+# print("Platform version: %s" % c.get_platform_version())
+# print("Model number: %s" % c.get_model_number())
+# print("FW version: %s" % c.get_fw_version())
+# print("Build date: %s" % c.get_build_date())
 # c.get_power_state()
 
 
