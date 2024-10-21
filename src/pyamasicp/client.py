@@ -26,16 +26,15 @@ def _prepare_message(id, command, data):
 
 class Client:
 
-    def __init__(self, host, port=5000, timeout=5, retries=3, buffer_size=64):
+    def __init__(self, host, port=5000, timeout=5, buffer_size=64):
         self._lock = threading.Lock()
-        self._retries = retries
         self._timeout = timeout
         self._socket = None
         self._host = host
-        self._broadcast_port = port
+        self._port = port
         self._logger = logging.getLogger(self.__class__.__qualname__)
         self._buffer_size = buffer_size  # Timeout after 5 seconds
-        self._logger.debug('host: %s:%d' % (self._host, self._broadcast_port))
+        self._logger.debug('host: %s:%d' % (self._host, self._port))
 
     def send(self, id: bytes, command: bytes, data: bytes = b''):
         with self._lock:
@@ -69,7 +68,7 @@ class Client:
         self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._socket.settimeout(self._timeout)
         try:
-            self._socket.connect((self._host, self._broadcast_port))
+            self._socket.connect((self._host, self._port))
         except Exception as e:
             self._logger.debug("Connection error: %s" % e)
             self.close()

@@ -13,7 +13,7 @@ logger.setLevel(logging.DEBUG)
 
 logger.debug("MAC: %a" % getmac.get_mac_address(ip='iiyama.home', hostname='iiyama.home'))
 
-cl = client.Client('iiyama.home', mac="DC:62:94:25:02:B3")
+cl = client.Client('iiyama.home')
 cm = Commands(cl)
 
 cm.set_power_state(True)
@@ -56,3 +56,5 @@ cm.ir_command(IR_CURSOR_UP)
 # Media:    0x16[0]
 # PDF:      0x17[0]
 # Custom:   0x18[0]
+
+cl.close()
