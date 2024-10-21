@@ -25,11 +25,12 @@ def _prepare_message(id, command, data):
 
 
 class Client:
-    _lock = threading.Lock()
 
-    def __init__(self, host, port=5000, timeout=.7, retries=3, buffer_size=1024):
+    def __init__(self, host, port=5000, timeout=5, retries=3, buffer_size=64):
+        self._lock = threading.Lock()
         self._retries = retries
         self._timeout = timeout
+        self._socket = None
         self._host = host
         self._broadcast_port = port
         self._logger = logging.getLogger(self.__class__.__qualname__)
@@ -37,42 +38,46 @@ class Client:
         self._logger.debug('host: %s:%d' % (self._host, self._broadcast_port))
 
     def send(self, id: bytes, command: bytes, data: bytes = b''):
-        with Client._lock:
-            _socket = self._create_and_connect_socket()
-            if _socket:
+        with self._lock:
+            if not self._socket:
+                self.connect()
+
+            if self._socket:
                 try:
                     message = _prepare_message(id, command, data)
                     self._log_debug_request(id, message, data)
-                    recv = self._call_remote(_socket, message)
+                    recv = self._call_remote(message)
                     return self._process_response(id, command, recv)
                 except socket.timeout:
                     self._logger.error("Socket timeout, no response received from the server.")
+                    self.close()
                 except socket.error as e:
                     self._logger.error(f"Socket error: {e}")
+                    self.close()
                 finally:
-                    _socket.close()
-                    sleep(.6)
+                    self.close()
+                    sleep(.2)
+            else:
+                raise socket.error("Unable to connect socket.")
 
-    def _call_remote(self, _socket, message):
-        _socket.sendall(message)
-        recv = _socket.recv(self._buffer_size)
+    def _call_remote(self, message):
+        self._socket.sendall(message)
+        recv = self._socket.recv(self._buffer_size)
         return recv
 
-    def _create_and_connect_socket(self):
-        _socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        _socket.settimeout(self._timeout)
-        error = None
-        for _ in range(self._retries):
-            try:
-                _socket.connect((self._host, self._broadcast_port))
-                return _socket
-            except BlockingIOError:
-                sleep(.1)
-            except socket.error as e:
-                error = e
-        self._logger.debug("Connection error: %s" % error)
-        _socket.close()
-        raise error
+    def connect(self):
+        self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self._socket.settimeout(self._timeout)
+        try:
+            self._socket.connect((self._host, self._broadcast_port))
+        except Exception as e:
+            self._logger.debug("Connection error: %s" % e)
+            self.close()
+            raise e
+
+    def close(self):
+        self._socket.close()
+        self._socket = None
 
     def _process_response(self, id, command, response_data):
 
