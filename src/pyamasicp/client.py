@@ -23,9 +23,9 @@ def _prepare_message(id, command, data):
     checksum = calculate_checksum(message)
     return message + checksum
 
-_lock = threading.Lock()
 
 class Client:
+    _lock = threading.Lock()
 
     def __init__(self, host, port=5000, timeout=.7, retries=3, buffer_size=1024):
         self._retries = retries
@@ -37,7 +37,7 @@ class Client:
         self._logger.debug('host: %s:%d' % (self._host, self._broadcast_port))
 
     def send(self, id: bytes, command: bytes, data: bytes = b''):
-        with _lock:
+        with Client._lock:
             _socket = self._create_and_connect_socket()
             if _socket:
                 try:
