@@ -76,8 +76,9 @@ class Client:
             raise e
 
     def close(self):
-        self._socket.close()
-        self._socket = None
+        if self._socket:
+            self._socket.close()
+            self._socket = None
 
     def _process_response(self, id, command, response_data):
 
