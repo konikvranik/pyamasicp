@@ -110,15 +110,19 @@ class Commands:
         self._client.send(self._id, CMD_SET_POWER_STATE, VAL_POWER_ON if state else VAL_POWER_OFF)
 
     def get_volume(self):
-        result = [b for b in self._client.send(self._id, CMD_GET_VOLUME)]
-        result.reverse()
-        return result
+        response = self._client.send(self._id, CMD_GET_VOLUME)
+        if response:
+            result = [b for b in response]
+            result.reverse()
+            return result
 
     def set_volume(self, output_volume=0, volume=0):
         self._client.send(self._id, CMD_SET_VOLUME, bytearray([volume, output_volume, 0, 0]))
 
     def get_input_source(self):
-        return [b for b in self._client.send(self._id, CMD_GET_INPUT_SOURCE)]
+        response = self._client.send(self._id, CMD_GET_INPUT_SOURCE)
+        if response:
+            return [b for b in response]
 
     def set_input_source(self, input_type=0, input_number=0, osd_style=0, reserved=0):
         self._client.send(self._id, CMD_SET_INPUT_SOURCE, bytearray([input_type, input_number, osd_style, reserved]))
@@ -143,7 +147,8 @@ class Commands:
 
     def _get_string(self, cmd, data):
         response = self._client.send(self._id, cmd, data)
-        return response.decode('utf-8') if response else None
+        if response:
+            return response.decode('utf-8')
 
     def ir_command(self, code):
         self._client.send(self._id, CMD_IR, code)
