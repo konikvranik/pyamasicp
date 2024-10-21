@@ -55,30 +55,35 @@ IR_BTN_8 = b'\x08'
 IR_BTN_9 = b'\x09'
 
 INPUT_SOURCES = {
-    "VIDEO": 0x00,
+    "HDMI 1": 0x0D,
+    "HDMI 2": 0x06,
+    "HDMI 3": 0x0F,
+    "HDMI 4": 0x19,
+
+    "Display Port 1": 0x0A,
+    "Display Port 2": 0x07,
     "Display Port": 0x01,
+
+    "USB 1": 0x0C,
+    "USB 2": 0x08,
+
+    "VIDEO": 0x00,
     "S-VIDEO": 0x02,
     "COMPONENT": 0x03,
     "VGA": 0x05,
-    "HDMI 2": 0x06,
-    "Display Port 2": 0x07,
-    "USB 2": 0x08,
-    "Card DVI-D": 0x09,
-    "Display Port 1": 0x0A,
-    "Card OPS": 0x0B,
-    "USB 1": 0x0C,
-    "HDMI 1": 0x0D,
     "DVI-D": 0x0E,
-    "HDMI 3": 0x0F,
+
+    "Card DVI-D": 0x09,
+    "Card OPS": 0x0B,
+
     "BROWSER": 0x10,
     "SMARTCMS": 0x11,
-    "DMS (Digital Media Server)": 0x12,
     "INTERNAL STORAGE": 0x13,
-    "Reserved": 0x14,
     "Media Player": 0x16,
     "PDF Player": 0x17,
+    "DMS (Digital Media Server)": 0x12,
+    "Reserved": 0x14,
     "Custom": 0x18,
-    "HDMI 4": 0x19,
 }
 
 
