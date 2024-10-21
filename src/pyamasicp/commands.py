@@ -107,11 +107,7 @@ class Commands:
             return None
 
     def set_power_state(self, state: bool):
-        try:
-            self._client.send(self._id, CMD_SET_POWER_STATE, VAL_POWER_ON if state else VAL_POWER_OFF)
-        except socket.error:
-            if state:
-                self._client.wake_on_lan()
+        self._client.send(self._id, CMD_SET_POWER_STATE, VAL_POWER_ON if state else VAL_POWER_OFF)
 
     def get_volume(self):
         result = [b for b in self._client.send(self._id, CMD_GET_VOLUME)]

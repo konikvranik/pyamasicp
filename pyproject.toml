@@ -1,6 +1,6 @@
 [project]
 name = "pyamasicp"
-version = "0.2.0"
+version = "0.2.1"
 authors = [
     { name = "Petr Vraník", email = "hpa@suteren.net" },
 ]
@@ -19,10 +19,6 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3",
-]
-dependencies = [
-    "getmac~=0.9.5",
-    "wakeonlan~=3.1.0"
 ]
 
 [project.urls]

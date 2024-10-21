@@ -5,9 +5,6 @@ import socket
 import threading
 from time import sleep
 
-import getmac
-import wakeonlan
-
 HEADER = b'\xA6'
 CATEGORY = b'\x00'
 CODE0 = b'\x00'
@@ -29,36 +26,15 @@ def _prepare_message(id, command, data):
 
 class Client:
 
-    def __init__(self, host, port=5000, timeout=.7, retries=3, buffer_size=1024, mac=None,
-                 broadcast_address=None):
+    def __init__(self, host, port=5000, timeout=.7, retries=3, buffer_size=1024):
         self._lock = threading.Lock()
         self._retries = retries
         self._timeout = timeout
-        self._broadcast_address = broadcast_address
         self._host = host
         self._broadcast_port = port
-        self._mac_addresses = mac.split(r'[\s,;]') if mac else [
-            getmac.get_mac_address(ip=self._host, hostname=self._host)]
         self._logger = logging.getLogger(self.__class__.__qualname__)
         self._buffer_size = buffer_size  # Timeout after 5 seconds
-        self._logger.debug(
-            'host: %s:%d, mac: %s, wol_target: %s' % (
-            self._host, self._broadcast_port, self._mac_addresses, self._broadcast_address))
-
-    def wake_on_lan(self):
-        service_kwargs = {}
-        if self._broadcast_address is not None:
-            service_kwargs["ip_address"] = self._broadcast_address
-        if self._broadcast_port is not None:
-            service_kwargs["port"] = self._broadcast_port
-
-        self._logger.debug(
-            "Send magic packet to mac %s (broadcast: %s, port: %s)",
-            self._mac_addresses,
-            self._broadcast_address,
-            self._broadcast_port,
-        )
-        wakeonlan.send_magic_packet(self._mac_addresses, **service_kwargs)
+        self._logger.debug('host: %s:%d' % (self._host, self._broadcast_port))
 
     def send(self, id: bytes, command: bytes, data: bytes = b''):
         with self._lock:

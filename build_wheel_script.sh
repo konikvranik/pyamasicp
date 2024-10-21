@@ -1,0 +1,1 @@
+docker run --rm -v `pwd`:/io quay.io/pypa/musllinux_1_1_x86_64 /io/build_wheel.sh
