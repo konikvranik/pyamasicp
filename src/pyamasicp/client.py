@@ -1,4 +1,3 @@
-import asyncio
 import binascii
 import functools
 import logging
@@ -31,23 +30,35 @@ def _prepare_message(id, command, data):
 class Client:
 
     def __init__(self, host, port=5000, timeout=.7, retries=3, buffer_size=1024, mac=None,
-                 wol_target=None):
+                 broadcast_address=None):
         self._lock = threading.Lock()
         self._retries = retries
         self._timeout = timeout
-        self._wol_target = wol_target
+        self._broadcast_address = broadcast_address
         self._host = host
-        self._port = port
-        self._mac = mac if mac else getmac.get_mac_address(ip=self._host, hostname=self._host)
+        self._broadcast_port = port
+        self._mac_addresses = mac.split(r'[\s,;]') if mac else [
+            getmac.get_mac_address(ip=self._host, hostname=self._host)]
         self._logger = logging.getLogger(self.__class__.__qualname__)
         self._buffer_size = buffer_size  # Timeout after 5 seconds
         self._logger.debug(
-            'host: %s:%d, mac: %s, wol_target: %s' % (self._host, self._port, self._mac, self._wol_target))
+            'host: %s:%d, mac: %s, wol_target: %s' % (
+            self._host, self._broadcast_port, self._mac_addresses, self._broadcast_address))
 
     def wake_on_lan(self):
-        target_ip = wakeonlan.BROADCAST_IP if self._wol_target is None else self._wol_target
-        self._logger.debug('Waking on LAN %s using %s' % (self._mac, target_ip))
-        wakeonlan.send_magic_packet(self._mac, ip_address=target_ip)
+        service_kwargs = {}
+        if self._broadcast_address is not None:
+            service_kwargs["ip_address"] = self._broadcast_address
+        if self._broadcast_port is not None:
+            service_kwargs["port"] = self._broadcast_port
+
+        self._logger.debug(
+            "Send magic packet to mac %s (broadcast: %s, port: %s)",
+            self._mac_addresses,
+            self._broadcast_address,
+            self._broadcast_port,
+        )
+        wakeonlan.send_magic_packet(self._mac_addresses, **service_kwargs)
 
     def send(self, id: bytes, command: bytes, data: bytes = b''):
         with self._lock:
@@ -77,7 +88,7 @@ class Client:
         error = None
         for _ in range(self._retries):
             try:
-                _socket.connect((self._host, self._port))
+                _socket.connect((self._host, self._broadcast_port))
                 return _socket
             except BlockingIOError:
                 sleep(.1)
