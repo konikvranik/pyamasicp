@@ -26,7 +26,7 @@ def _prepare_message(id, command, data):
 
 class Client:
 
-    def __init__(self, host, port=5000, timeout=5, buffer_size=64):
+    def __init__(self, host, port=5000, timeout=1, buffer_size=64):
         self._lock = threading.Lock()
         self._timeout = timeout
         self._socket = None
