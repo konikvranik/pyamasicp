@@ -1,6 +1,6 @@
 [project]
 name = "pyamasicp"
-version = "0.2.9"
+version = "0.2.10"
 authors = [
     { name = "Petr Vraník", email = "hpa@suteren.net" },
 ]
