@@ -158,6 +158,8 @@ class Commands:
     def ir_command(self, code):
         self._client.send(self._id, CMD_IR, code)
 
+    def disconnect(self):
+        self._client.close()
 
 class CommandException(Exception):
     pass
