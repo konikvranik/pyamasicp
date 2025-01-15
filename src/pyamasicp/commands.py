@@ -2,7 +2,7 @@ import binascii
 import logging
 import socket
 
-from pyamasicp.client import Client
+from .client import Client
 
 CMD_SET_POWER_STATE = b'\x18'
 CMD_GET_POWER_STATE = b'\x19'
