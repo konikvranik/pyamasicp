@@ -117,12 +117,10 @@ class Commands:
     def get_volume(self):
         response = self._client.send(self._id, CMD_GET_VOLUME)
         if response:
-            result = [b for b in response]
-            result.reverse()
-            return result
+            return [b for b in response]
 
-    def set_volume(self, output_volume=0, volume=0):
-        self._client.send(self._id, CMD_SET_VOLUME, bytearray([volume, output_volume, 0, 0]))
+    def set_volume(self, volume=0, output_volume=0):
+        self._client.send(self._id, CMD_SET_VOLUME, bytearray([volume, output_volume]))
 
     def get_input_source(self):
         response = self._client.send(self._id, CMD_GET_INPUT_SOURCE)
