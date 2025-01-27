@@ -15,6 +15,6 @@ if __name__ == '__main__':
     commands = Commands(Client(args.target, port=args.port))
     if args.command == 'volume':
         if args.arguments:
-            print(commands.set_volume(int(args.arguments[0]), int(args.arguments[1])))
-        else:
-            print("Volume is: %s\n" % commands.get_volume())
+            commands.set_volume(int(args.arguments[0]),
+                                int(args.arguments[0] if len(args.arguments) < 2 else int(args.arguments[1])))
+        print("Volume is: %s\n" % commands.get_volume())
