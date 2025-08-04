@@ -3,7 +3,6 @@ import functools
 import logging
 import socket
 import threading
-from time import sleep
 
 HEADER = b'\xA6'
 CATEGORY = b'\x00'
@@ -13,7 +12,10 @@ DATA_CONTROL = b'\x01'
 
 
 def calculate_checksum(message):
-    return bytes([functools.reduce(lambda a, b: a ^ b, list(message))])
+    if message:
+        return bytes([functools.reduce(lambda a, b: a ^ b, list(message))])
+    else:
+        return 0
 
 
 def _prepare_message(id, command, data):
@@ -32,7 +34,7 @@ class Client:
         self._socket = None
         self._host = host
         self._port = port
-        self._logger = logging.getLogger(self.__class__.__qualname__)
+        self._logger = logging.getLogger(f"{self.__class__.__module__}.{self.__class__.__qualname__}")
         self._buffer_size = buffer_size  # Timeout after 5 seconds
         self._logger.debug('host: %s:%d' % (self._host, self._port))
 
@@ -49,9 +51,9 @@ class Client:
                     return self._process_response(id, command, recv)
                 except socket.timeout:
                     self._logger.error("Socket timeout, no response received from the server.")
-                    self.close()
                 except socket.error as e:
                     self._logger.error(f"Socket error: {e}")
+                finally:
                     self.close()
             else:
                 self.close()

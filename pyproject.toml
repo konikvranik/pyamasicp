@@ -6,7 +6,7 @@ authors = [
 ]
 description = "Client for iiyama TV rs232 over lan protocol"
 license = "MIT"
-keywords = ["rs232", "lan", "iiyama", "home-assistant"]
+keywords = ["rs232", "lan", "iiyama", "home-assistant", "SICP", "TV", "monitor", "home-automation"]
 readme = "README.md"
 requires-python = ">=3.12"
 classifiers = [
